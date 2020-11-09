@@ -13,7 +13,7 @@
 \usepackage[pdftex]{graphicx}
 \usepackage{epsfig}
 \usepackage{ulem, stmaryrd, dsfont}
-
+\usepackage{hyperref}
 
 % \usepackage{mathabx} % for \vvvert ||| |||
 \usepackage{./tex/sty/scribe}
@@ -23,9 +23,9 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \PassOptionsToPackage{hyphens}{url}
-\usepackage[pdftex,linkcolor=test,citecolor=vsomb_col,
-colorlinks=true,pagebackref,bookmarks=true,plainpages=true,
-urlcolor=fb_col]{hyperref}
+%\usepackage[pdftex,linkcolor=test,citecolor=vsomb_col,
+%colorlinks=true,pagebackref,bookmarks=true,plainpages=true,
+%urlcolor=fb_col]{hyperref}
 \usepackage{cleveref}
 
 
@@ -33,7 +33,7 @@ urlcolor=fb_col]{hyperref}
 
 \begin{document}
 \sloppy
-\lecture{HMMA307}{REstricted Maximum Likelihood}{Tong Zhang}{Ophélie Coiffier}
+\lecture{HMMA307}{Lasso vs FoBa}{Tong Zhang}{Ophélie Coiffier}
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -90,13 +90,15 @@ Now, we can compare these two principles methods : LASSO and FoBa.\\
 The Lasso method allows to select features under some conditions. But we need to choose an appropriate non-zero threshold. And there are $2$ problems : the $L_1$ regularization parameter and the non-zero threshold (there are difficult to determine). Besides, we have a 'bias' with the $L_1$ regularization. While the FoBa method hasn't the same conditions to find the threshold parameter.\\
 On the contrary, the FoBa greedy algorithm is closely related to the path-following algorithm for solving Lasso. The LARS algorithm (a closer algorithm of FoBa) starts with a large regularization parameter such as Lasso, then it is gradually decreased. We can remind us that LARS tracks the path through $L_1$ penalised least squared error by gradually decreasing the regularization parameter. But this way to find regularization parameter produces a significant bias. That is a difference between LARS and FoBa because FoBa which tracks the insertion and deletion with unbiased least squared error. It will be needed to wait a few iterations to reduce the regularization parameter and finally reduce the bias to look like the FoBa parameter. Last, Lasso and FoBa has an other similarity : mistakes made in earlier steps can be removed later. That is not possible with a forward greedy algorithm (an OMP method).\\
 
-In the next part, we will compare these three methods with two examples : one with \textit{Ionosphere} data, one with \textit{Boston Housing} data. Data is available on websites : \href{https://archive.ics.uci.edu/ml/machine-learning-databases/housing/}{https://archive.ics.uci.edu/ml/machine-learning-databases/housing/}\cite{data_bis} and \href{https://archive.ics.uci.edu/ml/datasets/ionosphere}{https://archive.ics.uci.edu/ml/datasets/ionosphere}\cite{data}. \\
+In the next part, we will compare these three methods with two examples : one with \textit{Ionosphere} data, one with \textit{Boston Housing} data. Data is available on websites : \href{https://archive.ics.uci.edu/ml/machine-learning-databases/housing/}{https://archive.ics.uci.edu/ml/machine-learning-databases/housing/}\cite{house} and \href{https://archive.ics.uci.edu/ml/datasets/ionosphere}{https://archive.ics.uci.edu/ml/datasets/ionosphere}\cite{iono}. \\
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Examples with comparison of three methods}
+\subsection{First example : Boston Housing data}
 
+\subsection{Second example : Ionosphere data}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -114,7 +116,7 @@ To visualize the Python code, we can go to the Github :
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \bibliographystyle{alpha}
-\bibliography{./tex/biblio/references_all.bib}
+\bibliography{./tex/biblio/references}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 
