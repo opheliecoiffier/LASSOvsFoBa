@@ -1,0 +1,121 @@
+\documentclass{article}
+%\usepackage{fullpage}
+
+\usepackage[english,french]{babel}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+
+\usepackage{amsmath, amsfonts, amssymb, amsthm}
+\usepackage{bbm,algorithmic,algorithm,verbatim}
+
+\usepackage{color}
+\usepackage{subcaption}
+\usepackage[pdftex]{graphicx}
+\usepackage{epsfig}
+\usepackage{ulem, stmaryrd, dsfont}
+
+
+% \usepackage{mathabx} % for \vvvert ||| |||
+\usepackage{./tex/sty/scribe}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Hyperlinks
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\PassOptionsToPackage{hyphens}{url}
+\usepackage[pdftex,linkcolor=test,citecolor=vsomb_col,
+colorlinks=true,pagebackref,bookmarks=true,plainpages=true,
+urlcolor=fb_col]{hyperref}
+\usepackage{cleveref}
+
+
+
+
+\begin{document}
+\sloppy
+\lecture{HMMA307}{REstricted Maximum Likelihood}{Tong Zhang}{Ophélie Coiffier}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+In this report, we speak about three methods which predicted variables and with these predicted variables, we can compare the mean squared error on test and train values. For that, we use Lasso (using $L_1$ regularization), OMP ("Orthogonal Matching Pursuit", using forward greedy algorithm) and LARS (using forward and backward steps, such as FoBa (Forward-Backward) algorithm). Given that the FoBa function is available with the software R, we replace FoBa by LARS. But there is one significant difference : LARS tracks the path through $L_1$ penalized least squared error by gradually decreasing the regularization parameter and FoBa uses the insertion and deletion with unbiased least squared error. So, examples will not have the same results.\\
+\begin{center}
+    Which methods will be chosen to predict variables depending on the sparsity ?
+\end{center}
+First, we will describe our three methods then we apply them with real examples.
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Mathematic approach}
+In this part, we will describe three methods to predict variables :
+\begin{itemize}
+    \item The Lasso 
+    \item The OMP (Orthogoanl Matching Pursuit)
+    \item The LARS (the closest equivalent for FoBa algorithm)
+\end{itemize}
+
+First, to measure the quality of prediction, we use a linear prediction model :
+\[ f(x)=\trans{\beta}x\]
+Where $\beta$ is estimated with the empirical risk minimization : \[\hat{\beta}= \underset{\beta \in \R^d}\argmin \sum_{i=1}^n \Phi(\trans\beta x_i, y_i)\]
+and $\Phi$ is loss function.\\
+But $\hat{\beta}$ overfits the data so we need to adjust $\beta$. That's why, we obtain :
+\[\hat{\beta} = \underset{\beta \in \R^d}{\argmin} \sum_{i=1}^n \Phi (\trans{\beta}x_i, y_i)+ \lambda g(\beta)\]
+With $\lambda >0$ is an adjustment parameter and $g(\beta)$ is a regularization condition.
+
+\subsection{The LASSO method}
+The Lasso method uses the $L_1$ regularization. That means :
+\[\hat{\beta} = \underset{\beta \in \R^d}{\argmin} \sum_{i=1}^n \Phi (\trans{\beta}x_i, y_i)+ \lambda ||\beta||_1\]
+Where $||\beta||_1<k$ and $k$ is the sparsity parameter.\\
+There are $2$ main issues with this method : 
+\begin{itemize}
+    \item Desirable feature selection property can only be achieve under relatively strong assumption.
+    \item We need to use a large regularization parameter ($\lambda$) but it leads to sub-optimal prediction accuracy. To counter this problem, we need a complex and less robust procedure.
+\end{itemize}
+
+\subsection{The OMP method}
+The second method that we will use in examples is the OMP method. It's a forward greedy algorithm. We use to improve an arbitrary prediction method or select relevant features. The principle is : add a feature at every step to aggressively reduce the squared error. But, like the previous method, there are issues and one of the most important is :
+\begin{itemize}
+    \item It never corrects mistakes made earlier steps. So it's inadequate for feature selection because it only works when small subsets of the basis functions are near orthogonal.
+\end{itemize}
+A solution is the backward greedy algorithm. The principle is to train a model with all the features and greedily remove one feature at a time. To choose the feature that we remove, we take these which have the smallest increase of squared error. Yet, if the number of features is higher than the number of samples, during the first step, $\beta$ overfits the data.\\
+To counter these problems, we can use a combination of both algorithms : forward and backward. It's the principle of FoBa method (and LARS method).
+
+\subsection{The FoBa algorithm (method)}
+This algorithm uses the Forward and Backward greedy algorithm. The approach that we use is : we want to use backward steps to remove any errors caused by earlier forward steps and to keep a reasonable number of basis functions. And we want to take backward step adaptively and make gain made in the forward steps. Actually, we use backward step when the squared error increase is no more than half of the squared error decrease in the earlier corresponding forward step. Moreover, it has a limited number of iterations so it is computationally efficient. \\
+\\
+\\
+Now, we can compare these two principles methods : LASSO and FoBa.\\
+The Lasso method allows to select features under some conditions. But we need to choose an appropriate non-zero threshold. And there are $2$ problems : the $L_1$ regularization parameter and the non-zero threshold (there are difficult to determine). Besides, we have a 'bias' with the $L_1$ regularization. While the FoBa method hasn't the same conditions to find the threshold parameter.\\
+On the contrary, the FoBa greedy algorithm is closely related to the path-following algorithm for solving Lasso. The LARS algorithm (a closer algorithm of FoBa) starts with a large regularization parameter such as Lasso, then it is gradually decreased. We can remind us that LARS tracks the path through $L_1$ penalised least squared error by gradually decreasing the regularization parameter. But this way to find regularization parameter produces a significant bias. That is a difference between LARS and FoBa because FoBa which tracks the insertion and deletion with unbiased least squared error. It will be needed to wait a few iterations to reduce the regularization parameter and finally reduce the bias to look like the FoBa parameter. Last, Lasso and FoBa has an other similarity : mistakes made in earlier steps can be removed later. That is not possible with a forward greedy algorithm (an OMP method).\\
+
+In the next part, we will compare these three methods with two examples : one with \textit{Ionosphere} data, one with \textit{Boston Housing} data. Data is available on websites : \href{https://archive.ics.uci.edu/ml/machine-learning-databases/housing/}{https://archive.ics.uci.edu/ml/machine-learning-databases/housing/}\cite{data_bis} and \href{https://archive.ics.uci.edu/ml/datasets/ionosphere}{https://archive.ics.uci.edu/ml/datasets/ionosphere}\cite{data}. \\
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Examples with comparison of three methods}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Deal with linear models in depth}
+\label{sec:pour_aller_plus_loin_sur_ce_theme}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+We can read the article and the lesson to learn more about the Machine Learning and the Adaptive FoBa algorithm :
+\cite{Article}, \cite{Teaching}\\
+To visualize the Python code, we can go to the Github :
+\cite{code}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\bibliographystyle{alpha}
+\bibliography{./tex/biblio/references_all.bib}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+\end{document}
