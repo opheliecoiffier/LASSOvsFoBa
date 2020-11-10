@@ -51,7 +51,7 @@ fig2.savefig("test_error_ionosphere.pdf")
 #----------------------------------
 fig_alpha1 = plt.figure()
 alpha_choice_fig(x, y, my_alphas, nb_features=33, train_size=train_size)
-fig_alpha1.savefig('alpha_choice_lasso')
+fig_alpha1.savefig('alpha_choice_lasso.pdf')
 print(alpha_choice(x, y, my_alphas, nb_features=33, train_size=train_size))
 
 
@@ -88,6 +88,6 @@ fig4.savefig("test_error_housing.pdf")
 #----------------------------------
 fig_alpha2 = plt.figure()
 alpha_choice_fig(X, Y, my_alphas_house, nb_features=13, train_size=train_size)
-fig_alpha2.savefig('alpha_choice_lasso_house')
+fig_alpha2.savefig('alpha_choice_lasso_house.pdf')
 print(alpha_choice(X, Y, my_alphas_house, nb_features=13, train_size=train_size))
 
