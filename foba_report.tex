@@ -22,7 +22,7 @@
 % Hyperlinks
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-\PassOptionsToPackage{hyphens}{url}
+%\PassOptionsToPackage{hyphens}{url}
 %\usepackage[pdftex,linkcolor=test,citecolor=vsomb_col,
 %colorlinks=true,pagebackref,bookmarks=true,plainpages=true,
 %urlcolor=fb_col]{hyperref}
@@ -90,15 +90,85 @@ Now, we can compare these two principles methods : LASSO and FoBa.\\
 The Lasso method allows to select features under some conditions. But we need to choose an appropriate non-zero threshold. And there are $2$ problems : the $L_1$ regularization parameter and the non-zero threshold (there are difficult to determine). Besides, we have a 'bias' with the $L_1$ regularization. While the FoBa method hasn't the same conditions to find the threshold parameter.\\
 On the contrary, the FoBa greedy algorithm is closely related to the path-following algorithm for solving Lasso. The LARS algorithm (a closer algorithm of FoBa) starts with a large regularization parameter such as Lasso, then it is gradually decreased. We can remind us that LARS tracks the path through $L_1$ penalised least squared error by gradually decreasing the regularization parameter. But this way to find regularization parameter produces a significant bias. That is a difference between LARS and FoBa because FoBa which tracks the insertion and deletion with unbiased least squared error. It will be needed to wait a few iterations to reduce the regularization parameter and finally reduce the bias to look like the FoBa parameter. Last, Lasso and FoBa has an other similarity : mistakes made in earlier steps can be removed later. That is not possible with a forward greedy algorithm (an OMP method).\\
 
-In the next part, we will compare these three methods with two examples : one with \textit{Ionosphere} data, one with \textit{Boston Housing} data. Data is available on websites : \href{https://archive.ics.uci.edu/ml/machine-learning-databases/housing/}{https://archive.ics.uci.edu/ml/machine-learning-databases/housing/}\cite{house} and \href{https://archive.ics.uci.edu/ml/datasets/ionosphere}{https://archive.ics.uci.edu/ml/datasets/ionosphere}\cite{iono}. \\
+In the next part, we will compare these three methods with two examples : one with \textit{Ionosphere} data, one with \textit{Boston Housing} data.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Examples with comparison of three methods}
-\subsection{First example : Boston Housing data}
+ In the second part, we will use the mean squared error as loss function. Then, we will predict variables thanks to the randomly partition into $50$ training points and $test\_size$ (defined for each example) test points. Finally, we will compare the mean squared error for each methods and for each groups (test and training points).\\
+ Data is available on websites : \href{https://archive.ics.uci.edu/ml/machine-learning-databases/housing/}{https://archive.ics.uci.edu/ml/machine-learning-databases/housing/}\cite{house} and \href{https://archive.ics.uci.edu/ml/datasets/ionosphere}{https://archive.ics.uci.edu/ml/datasets/ionosphere}\cite{iono}. \\
+ And Python code is available on the Github \cite{code}.
 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{First example : Boston Housing data}
+\textit{Boston housing} data is $506$ census tracts of Boston from the $1970$ census. So we have $506$ data-points (for each census) and $14$ features. Actually, we have $13$ different features and a $14th$ feature corresponding with a constant offset one. The desired output is the housing price (the $y$ vector in  the mathematics approach).\\
+As we explain before this subsection, we partition the data points into $2$ groups : training points and test points. We have $50$ training points and $456$ test points. We calculate the average squared error (MSE) between the predicted values of $y$ and the true values. We repeat this, $50$ times and we calculate the mean of these MSE. We do this for the three methods : Lasso, Lars and OMP. Moreover, we use a sparsity starting at $1$ and stopping at $10$. We obtain these graphs (Figure $1$ $\&$ Figure $2$).
+\begin{figure}[!ht]
+    \centering
+    \includegraphics[scale=0.5]{./images/training_error_housing.pdf}
+    \caption{MSE comparison on training points with Boston housing's data}
+    \label{Figure 1}
+\end{figure}
+The better method has a smaller MSE than others.\\
+This graph shows us that the Lasso method has a better prediction than the OMP method, which has a better prediction than the Lars method. Besides, all the curves decrease : they begin between $59$ and $22$ and they achieve $15-20$.\\
+The problem is : we don't have the same figure than the article. The curves behavior is the same but in the main article, the three curves begin to $59$ and finish to $10-15$. Maybe the cause is : we don't use the same method (the main article uses FoBa algorithm, Forward-greedy algorithm and backward algorithm). Actually, we choose a specific method using these algorithms not basic algorithms. On the main article graph, we find that FoBa algorithm is better than backward and backward is better than forward : the opposite of our finding.\\
+\\
+Let's compare the test points (Figure $2$).\\
+\begin{figure}[!ht]
+    \centering
+    \includegraphics[scale=0.5]{./images/test_error_housing.pdf}
+    \caption{MSE comparison on test points with Boston housing's data}
+    \label{Figure 2}
+\end{figure}
+Once more, we don't have the same graph than the main article. Here, we choose the Lars method when the sparsity is superior at $3$. Before, we choose the Lasso method. We can observe than the Lars curve decreases (start : $45$, stop : $30$) since it achieves a sparsity of $6$ then it increases (between $30$ and $38$). The OMP curve decreases since it achieves a sparsity of $3$ (start : $43$, stop : $37$), then it increases (between $37$ and $46$). And the Lasso curve lightly increases between $38$ and $43$.\\
+In the main article the three curves decrease between $60-63$ and $35$ for a sparsity included in $1$ and $5$. The better method is FoBa, then backward and finally forward algorithm. Between a sparsity of $5$ and $10$ they increase (start : $35$, stop : $40-44$) and the better method becomes backward algorithm (followed by forward algorithm). Finally, FoBa becomes the worst method. Once more, it's the opposite of our finding.\\
+\\
+Now, we will apply the mathematics approach with \textit{Ionosphere} data.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsection{Second example : Ionosphere data}
+\textit{Ionosphere} data contains $351$ data points with $35$ features. As the other data set, the $35th$ feature is a constant offset one. The $y$ vector corresponds to a binary valued : $0$ or $1$. It's the desired output.\\
+As we explain in the introduction of this part, we partition the data points into $2$ groups : training points and test points. We have $50$ training points and $301$ test points. As the previous data, we calculate the mean squared error (MSE) between the predicted values of y and the true values. We repeat this, $50$ times and we calculate the average of these MSE. We realise this with the three methods : Lasso, Lars and OMP. Moreover, we use the same sparsity than the other data set : between $1$ and $10$. Results are represented in Figure $3$ and Figure $4$.\\
+\\
+\begin{figure}[!ht]
+    \centering
+    \includegraphics[scale=0.5]{./images/training_error_ionosphere.pdf}
+    \caption{MSE comparison on training points with Ionosphere's data}
+    \label{Figure 3}
+\end{figure}
+We observe in this figure (Figure $3$) that OMP and Lars curve decrease while Lasso curve decreases from a sparsity of $5$. The OMP curve decreases between $0.130$ and $0.05$ while Lars curve decreases between $0.20$ and $0.075$. The Lasso curve stagnates at $0.226$ between a sparsity of $1$ and $6$, then it decreases from $0.225$ to $0.180$. So, we choose the method which have the smallest error : the OMP method.\\
+Our problem stays the difference between our representations and these of the main article. In this article, the three curves decrease and the better method is FoBa algorithm. All curves decrease between $0.17$ and $0.05-0.07$. The ranking of the best algorithm is : FoBa, forward-greedy then $L_1$. Our ranking was : OMP (forward-greedy algorithm), FoBa then Lasso ($L_1$).\\
+\\
+Let's compare the test points (Figure $4$).\\
+Thanks to this representation, we choose the Lars method when the sparsity is superior to $3$. When the sparsity is inferior to $3$, we choose OMP method. The worst method in every sparsity stays the Lasso method. Its curve stagnates at $0.235$ between a sparsity of $1$ and $4$, then it decreases (start : $0.235$, stop : $0.20$. While Lars curve decreases between $0.22$ and $0.15$ since a sparsity of $7$ then it lightly increases. The OMP decreases since a sparcity of $2$ (start : $0.18$, stop : $0.17$), then it increases between $0.17$ and $0.28$.\\
+Once more, it isn't the same result than the main article. In this article, the best algorithm is $L_1$ (for each sparsity) and the worst is  FoBa algorithm. Moreover, the $L_1$ curve decreases between a sparsity of $1$ and $3$, then it increases. The two others gradually increase.\\ 
+\begin{figure}[!ht]
+    \centering
+    \includegraphics[scale=0.5]{./images/test_error_ionosphere.pdf}
+    \caption{MSE comparison on test points with Ionosphere's data}
+    \label{Figure 4}
+\end{figure}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{Our issues}
+All of our representations are different to the representations of the Tong Zhang's article. An explanation will be the method used : we use function like OMP, Lasso and Lars to represent FoBa, $L_1$ and forward greedy algorithms. Or/And the $\lambda$ coefficient to implement Lasso function. But our choices of the best method is the opposite of his algorithm choice. So, I don't think it's the only issue that we have....\\
+Generally, we have the same "shape" of curves and the same order of magnitude. It's the only positive point that we have....
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section*{Conclusion}
+The main question is about the learning sparse representations using greedy algorithms.\\
+We find these results :\\
+Generally, for test points, FoBa algorithm (represented by Lars method) is the best algorithm. That means it's the algorithm which predicts $y$ with less mistakes. We remind us that we use Mean Squared Error (MSE) and we could use an other loss function to check our findings.\\
+For training points, we find OMP method (forward-greedy algorithm) only for the \textit{Boston housing} data and the third method ($L_1$) for the \textit{Ionosphere} data.\\
+\\
+Actually, according to the article, only the mixed algorithm : FoBa is useful with training points. We need to use a novel combination of the forward-greedy and backward-greedy algorithms to obtain a smaller error. To test points and \textit{Boston housing} data, better sparsity leads to a change of the useful algorithm. And with \textit{Ionosphere} data, the $L_1$ regularization leads to better performance : the "bias" helps to have a sub-optimal sparsity. In other words, it is an advantageous with these points and data. \\
+\\
+Finally, we must choose the best algorithm and the best method depending on data, sparsity and mathematics conditions that we can check.
+
+
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -111,9 +181,9 @@ In the next part, we will compare these three methods with two examples : one wi
 We can read the article and the lesson to learn more about the Machine Learning and the Adaptive FoBa algorithm :
 \cite{Article}, \cite{Teaching}\\
 To visualize the Python code, we can go to the Github :
-\cite{code}
+\cite{code} and go to the sklearn website to visualize functions used : \cite{algo} 
 
-
+\newpage
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \bibliographystyle{alpha}
 \bibliography{./tex/biblio/references}
