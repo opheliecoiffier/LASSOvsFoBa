@@ -71,7 +71,7 @@ The Lasso method uses the $L_1$ regularization. That means :
 Where $||\beta||_1<k$ and $k$ is the sparsity parameter. Where $\lambda$ is a known regularization parameter and $\lambda>0$.\\
 There are $2$ main issues with this method : 
 \begin{itemize}
-    \item Desirable feature selection property can only be achieve under relatively strong assumption.
+    \item Desirable feature selection property can only be achieved under relatively strong assumption.
     \item We need to use a large regularization parameter ($\lambda$) but it leads to sub-optimal prediction accuracy. To counteract this problem, we need a complex and less robust procedure.
 \end{itemize}
 \vspace{0.5cm}
@@ -83,10 +83,10 @@ The second method that we will use in examples is the OMP method. It's a forward
     \item It never corrects mistakes made earlier steps. So it's inadequate for feature selection because it only works when small subsets of the basis functions are near orthogonal.
 \end{itemize}
 A solution is the backward greedy algorithm. The principle is to train a model with all the features and greedily remove one feature at a time. To choose the feature that we remove, we take these which have the smallest increase of squared error. Yet, if the number of features is higher than the number of samples, during the first step, $\beta$ overfits the data.\\
-To counteract these problems, we can use a combination of both algorithms : forward and backward. It's the principle of FoBa method (and LARS method).
+To counteract those problems, we can use a combination of both algorithms : forward and backward. It's the principle of FoBa method (and LARS method).
 
 \subsection{The FoBa algorithm (method)}
-This algorithm uses the Forward and Backward greedy algorithm. The approach that we use is : we want to use backward steps to remove any errors caused by earlier forward steps and to keep a reasonable number of basis functions. And we want to take backward step adaptively and make gain made in the forward steps. Actually, we use backward step when the squared error increase is no more than half of the squared error decrease in the earlier corresponding forward step. Moreover, it has a limited number of iterations so it is computationally efficient. \\
+This algorithm uses the Forward and Backward greedy algorithm. The approach that we use is : we want to use backward steps to remove any errors caused by earlier forward steps and to keep a reasonable number of basis functions. And we want to take adaptively backward step to keep the gain made in the forward steps (we want to progress not remove features that we add with forward steps). Actually, we use backward step when the squared error increase is no more than half of the squared error decrease in the earlier corresponding forward step. Moreover, it has a limited number of iterations so it is computationally efficient. \\
 \\
 \\
 Now, we can compare these two principles methods : LASSO and FoBa.\\
@@ -103,12 +103,11 @@ In the second part, we will use the mean squared error as loss function. It is e
  \[MSE = \frac{1}{n} \sum_{i=1}^n (\hat{Y}_i-Y_i)^2\]
  Where $\hat{Y}$ is the vector of predicted values and $Y$ the vector of obseved values. Where $n$ is the dimension of $Y$.\\
  We remind us that $Y$ is the vector of the desired output.\\
- Then, we will predict variables thanks to the randomly partition into $50$ training points and $test\_size$ (defined for each example) test points. Finally, we will compare the mean squared error for each methods and for each groups (test and training points).\\
+ Then, we will predict variables thanks to the randomly partition into $50$ training points and $nb$ (defined for each example) test points. Finally, we will compare the mean squared error for each method and for each group (test and training points).\\
  Data is available on websites : \href{https://archive.ics.uci.edu/ml/machine-learning-databases/housing/}{https://archive.ics.uci.edu/ml/machine-learning-databases/housing/}\cite{house} and \href{https://archive.ics.uci.edu/ml/datasets/ionosphere}{https://archive.ics.uci.edu/ml/datasets/ionosphere}\cite{iono}. \\
  And Python code is available on the Github \cite{code}.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\subsection{First example : Boston Housing data}
 \subsection{First example : Boston Housing data}
 \textit{Boston housing} data is $506$ census tracts of Boston from the $1970$ census. So we have $506$ data-points (for each census) and $14$ features. Actually, we have $13$ different features and a $14th$ feature corresponding with a constant offset one. The desired output is the housing price (the $y$ vector in  the mathematics approach).\\
 As we explain before this subsection, we partition the data points into $2$ groups : training points and test points. We have $50$ training points and $456$ test points. We calculate the average squared error (MSE) between the predicted values of $y$ and the true values. We repeat this, $50$ times and we calculate the mean of these MSE. We do this for the three methods : Lasso, Lars and OMP. Moreover, we use a sparsity starting at $1$ and stopping at $10$. We obtain these graphs (Figure $1$ $\&$ Figure $2$).
@@ -120,7 +119,7 @@ As we explain before this subsection, we partition the data points into $2$ grou
 \end{figure}
 The better method has a smaller MSE than others.\\
 This graph shows us that the OMP method has a better prediction than the Lars method, which has a better prediction than the Lasso method. Besides, all the curves decrease : they begin between $59$ and $30$ and they achieve $15-20$.\\
-The problem is : we don't have the same figure than the article. The curves behavior is the same but in the main article, the three curves begin to $59$ and finish to $10-15$. Maybe the cause is : we don't use the same method (the main article uses FoBa algorithm, Forward-greedy algorithm and backward algorithm). Actually, we choose a specific method using these algorithms not basic algorithms. On the main article graph, we find that FoBa algorithm is better than backward and backward is better than forward : the opposite of our finding.\\
+The problem is : we don't have the same figure as the article. The curves behavior is the same but in the main article, the three curves begin to $59$ and finish to $10-15$. Maybe the cause is : we don't use the same method (the main article uses FoBa algorithm, Forward-greedy algorithm and backward algorithm). Actually, we choose a specific method using these algorithms not basic algorithms. On the main article graph, we find that FoBa algorithm is better than backward and backward is better than forward : the opposite of our finding.\\
 \\
 Let's compare the test points (Figure $2$).\\
 \begin{figure}[!ht]
@@ -145,8 +144,8 @@ As we explain in the introduction of this part, we partition the data points int
     \caption{MSE comparison on training points with Ionosphere's data}
     \label{Figure 3}
 \end{figure}
-We observe in this figure (Figure $3$) that OMP and Lars curve decrease with the same "shape" while Lasso curve decreases from a sparsity of $4$ and stagnates between a sparsity of $1$ to $5$. The OMP curve decreases between $0.150$ and $0.05$ while Lars curve decreases between $0.20$ and $0.075$. The Lasso curve stagnates at $0.225$ between a sparsity of $1$ and $5$, then it decreases from $0.225$ to $0.03$. So, we choose the method which have the smallest error : the OMP method until a sparsity of $8$, then we take the Lasso method.\\
-Our problem stays the difference between our representation and these of the main article. In this article, the three curves decrease and the better method is FoBa algorithm. All curves decrease between $0.17$ and $0.05-0.07$. The ranking of the best algorithm is : FoBa, forward-greedy then $L_1$. Our ranking was : OMP (forward-greedy algorithm), FoBa then Lasso ($L_1$).\\
+We observe in this figure (Figure $3$) that OMP and Lars curve decrease with the same "shape" while Lasso curve decreases from a sparsity of $4$ and stagnates between a sparsity of $1$ to $5$. The OMP curve decreases between $0.150$ and $0.05$ while Lars curve decreases between $0.20$ and $0.075$. The Lasso curve stagnates at $0.225$ between a sparsity of $1$ and $5$, then it decreases from $0.225$ to $0.03$. So, we choose the method which has the smallest error : the OMP method until a sparsity of $8$, then we take the Lasso method.\\
+Our problem remains the difference between our representation and those of the main article. In this article, the three curves decrease and the best method is FoBa algorithm. All curves decrease between $0.17$ and $0.05-0.07$. The ranking of the best algorithm is : FoBa, forward-greedy then $L_1$. Our ranking was : OMP (forward-greedy algorithm), FoBa then Lasso ($L_1$).\\
 \\
 \begin{figure}[!ht]
     \centering
@@ -155,12 +154,12 @@ Our problem stays the difference between our representation and these of the mai
     \label{Figure 4}
 \end{figure}
 Let's compare the test points (Figure $4$).\\
-Thanks to this representation, we choose the Lars method when the sparsity is superior to $3$. When the sparsity is inferior to $3$, we choose OMP method. The worst method stays the Lasso method until a sparsity of $3$, then it becomes OMP method. The Lasso curve stagnates at $0.235$ between a sparsity of $1$ and $4$, then it decreases (start : $0.235$, stop : $0.17$) and finally, the curve increases until $0.24$. While Lars curve decreases between $0.22$ and $0.15$ until a sparsity of $7$ then it lightly increases. The OMP decreases until a sparsity of $2$ (start : $0.19$, stop : $0.17$), then it increases between $0.17$ and $0.30$.\\
+Thanks to this representation, we choose the Lars method when the sparsity is superior to $3$. When the sparsity is inferior to $3$, we choose OMP method. The worst method remains the Lasso method until a sparsity of $3$, then it becomes OMP method. The Lasso curve stagnates at $0.235$ between a sparsity of $1$ and $4$, then it decreases (start : $0.235$, stop : $0.17$) and finally, the curve increases until $0.24$. While Lars curve decreases between $0.22$ and $0.15$ until a sparsity of $7$ then it lightly increases. The OMP decreases until a sparsity of $2$ (start : $0.19$, stop : $0.17$), then it increases between $0.17$ and $0.30$.\\
 Once more, it isn't the same result than the main article. In this article, the best algorithm is $L_1$ (for each sparsity) and the worst is  FoBa algorithm. Moreover, the $L_1$ curve decreases between a sparsity of $1$ and $3$, then it increases. The two others gradually increase.\\ 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsection{Our issues}
-All of our representations are different to the representations of the Tong Zhang's article. An explanation will be the method used : we use function like OMP, Lasso and Lars to represent FoBa, $L_1$ and forward greedy algorithms. Or/And the $\lambda$ coefficient to implement Lasso function. But our choices of the best method is the opposite of his algorithm choice. So, I don't think it's the only issue that we have....\\
+All our representations are different from the representations of the Tong Zhang's article. An explanation will be the method used : we use function like OMP, Lasso and Lars to represent FoBa, $L_1$ and forward greedy algorithms. Or/And an other explanation will be the $\alpha$ coefficient to implement Lasso function. But our choices of the best method is the opposite of his algorithm choice. So, I don't think it's the only issue that we have....\\
 Generally, we have the same "shape" of curves and the same order of magnitude. It's the only positive point that we have....
 We have an issue about the scale of Lasso curve too : \\
 To find the Lasso coefficient, we use the function \textit{Lasso\_path}.
@@ -178,10 +177,10 @@ Each lines different to $0$ correspond to a non zero coefficient for the explana
     \includegraphics[scale=0.2]{./images/nb_non_zero_house.pdf}
     \caption{Number of coefficients which are different of $0$ depending on alpha coefficient.}
 \end{figure}
-The problem is : we have the same coefficient several times and the order of these numbers are not the same that we use to represent the MSE depending on sparsity. So, we can't have the good scale to compare MSE with the other method. The two other method has a growing number of non zero coefficient, it is not stagnant like the Lasso method. Moreover, the list of non zero coefficient number is different to $[1, 2, 3, 4, 5, 6, 7, 8, 9 ,10]$ because we have $[4, 4, 6, 6, 6, 6, 7, 9, 10, 11]$. I don't manage to create this type of list with alpha coefficients. It is one of our issues.
+The problem is : we have the same coefficient several times and the order of these numbers are not the same that we use to represent the MSE depending on sparsity. So, we haven't the good scale to compare MSE with the other methods. The two other method have a growing number of non zero coefficient, it is not stagnant like the Lasso method. Moreover, the list of non zero coefficient number is different to $[1, 2, 3, 4, 5, 6, 7, 8, 9 ,10]$ because we have $[4, 4, 6, 6, 6, 6, 7, 9, 10, 11]$. I don't manage to create this type of list with alpha coefficients. It is one of our issues.
 \\
    \item \textit{Ionosphere} data\\
-We use the same method than \textit{Boston housing} data to create sparsity in Lasso method. So we meet the same issue.\\
+We use the same method as \textit{Boston housing} data to create sparsity in Lasso method. So we meet the same issue.\\
 The Figure $7$ shows us the representation of Lasso path using the alpha array : $[0.004,0.006,0.01,0.05,0.1,0.15, 0.2, 0.25, 0.3, 0.4]$.\\
    \begin{figure}[!ht]
     \centering
@@ -197,7 +196,6 @@ The figure $8$ represents the number of non zero coefficients depending on alpha
 \end{itemize}
 We find one of our issues but I don't manage to avoid it.....
 \newpage
-
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

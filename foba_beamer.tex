@@ -22,7 +22,7 @@
 \bigskip
 \begin{center}{
 \LARGE\color{marron}
-\textbf{HMMA 307 : Modèles linéaires avancés}}
+\textbf{HMMA 308 : Machine Learning}}
 \vspace{0.5cm}
 
 
@@ -149,12 +149,10 @@ $2$ issues :
     \newline
 	\only<2->{1) Use Forward greedy step} \newline
 	\visible<3->{2) Until squared error increase is no more than half of the squared error decrease in the earlier forward step} \newline
-	\only<4->{3) Use Backward greedy step $\&$ adaptively Backward step} \newline
-	\visible<5->{*) \textbf{Backward functions :} 
+	\only<4->{3) Use Backward greedy step $\&$ adaptive Backward step} \newline
+	\visible<5->{*) \textbf{Adaptive backward function :} 
 	\begin{itemize}
-	    \item Remove any errors caused by earlier forward steps
-	\item Keep reasonable number of basis functions
-	\item (adaptively Backward) Make sure that we progress
+	\item Make sure that we progress
 	\end{itemize}
 	}
 \end{frame}
@@ -199,7 +197,7 @@ Loss function used : \[MSE = \frac{1}{n} \sum_{i=1}^n (\hat{Y}_i-Y_i)^2\]
 \textbf{Principle : } 
 \begin{itemize}
     \item Randomly partition into $50$ training points and \textit{nb} test points
-    \item Predict variables
+    \item Predict variable
     \item Compare MSE for each methods and for each groups
 \end{itemize}
 \end{frame}
