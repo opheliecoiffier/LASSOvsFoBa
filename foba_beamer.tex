@@ -90,7 +90,7 @@ Université de Montpellier \\
 \begin{frame}{Introduction}
 To measure the quality of prediction, we use linear prediction model :
 \[f(x)=\trans{\beta}x\]
-With \[\hat{\beta}=\underset{\beta \in \bbR^d}\argmin\sum_{i=1}^n \Phi(\trans{\beta}x_i, y_i)+\lambda g(\beta)\]  
+With \[\hat{\beta}=\underset{\beta \in \bbR^d}\argmin\sum_{i=1}^n \Phi(\trans{\beta}x_i, y_i)+\lambda g(\beta)\]
 \end{frame}
 
 
@@ -150,7 +150,7 @@ $2$ issues :
 	\only<2->{1) Use Forward greedy step} \newline
 	\visible<3->{2) Until squared error increase is no more than half of the squared error decrease in the earlier forward step} \newline
 	\only<4->{3) Use Backward greedy step $\&$ adaptive Backward step} \newline
-	\visible<5->{*) \textbf{Adaptive backward function :} 
+	\visible<5->{*) \textbf{Adaptive backward function :}
 	\begin{itemize}
 	\item Make sure that we progress
 	\end{itemize}
@@ -194,7 +194,7 @@ $2$ issues :
 \begin{frame}{Introduction}
 Loss function used : \[MSE = \frac{1}{n} \sum_{i=1}^n (\hat{Y}_i-Y_i)^2\]
 
-\textbf{Principle : } 
+\textbf{Principle : }
 \begin{itemize}
     \item Randomly partition into $50$ training points and \textit{nb} test points
     \item Predict variable
@@ -301,7 +301,7 @@ We find these results :
     \item \textbf{Training points :} OMP (depending on sparcity for \textit{Ionosphere} data
 \end{itemize}
 \vspace{0.2cm}
-The article finds : 
+The article finds :
 \begin{itemize}
     \item \textbf{Test points :} FoBa for small sparsity and for \textit{Boston housing} data $\&$ Lasso for \textit{Ionosphere} data
     \item \textbf{Training points :} the mixed algorithm (FoBa)
